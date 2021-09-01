@@ -1,0 +1,38 @@
+version: '2.1'
+services:
+
+    auctioner:
+        build: ./auctioner
+        env_file:
+            - ./auctioner/.env
+        ports:
+            - "8080:8080"
+
+    bidder1:
+        build: ./bidder
+        depends_on:
+            - auctioner
+        env_file:
+            - ./bidder/.env
+        ports:
+            - "7000:7000"
+        environment:
+            - URL=http://auctioner:8080/registerBidder
+            - BIDDER=bidder_1
+            - PORT=7000
+            - DELAY=240
+            - HOST=192.168.43.131
+    bidder2:
+        build: ./bidder
+        depends_on:
+            - auctioner
+        env_file:
+            - ./bidder/.env
+        ports:
+            - "7001:7000"
+        environment:
+            - URL=http://auctioner:8080/registerBidder
+            - BIDDER=bidder_2
+            - PORT=7001
+            - DELAY=120
+            - HOST=192.168.43.131
